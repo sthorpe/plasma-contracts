@@ -220,15 +220,13 @@ contract RootChain {
      * @param _txBytes The challenging transaction in bytes RLP form.
      * @param _proof Proof of inclusion for the transaction used to challenge.
      * @param _sigs Signatures for the transaction used to challenge.
-     * @param _confirmationSig The confirmation signature for the transaction used to challenge.
      */
     function challengeExit(
         uint256 _cUtxoPos,
         uint256 _eUtxoIndex,
         bytes _txBytes,
         bytes _proof,
-        bytes _sigs,
-        bytes _confirmationSig
+        bytes _sigs
     )
         public
     {
@@ -236,12 +234,10 @@ contract RootChain {
         uint256 txindex = (_cUtxoPos % 1000000000) / 10000;
         bytes32 root = childChain[_cUtxoPos / 1000000000].root;
         var txHash = keccak256(_txBytes);
-        var confirmationHash = keccak256(txHash, root);
         var merkleHash = keccak256(txHash, _sigs);
         address owner = exits[eUtxoPos].owner;
 
         // Validate the spending transaction.
-        require(owner == ECRecovery.recover(confirmationHash, _confirmationSig));
         require(merkleHash.checkMembership(txindex, root, _proof));
 
         // Delete the owner but keep the amount to prevent another exit.
