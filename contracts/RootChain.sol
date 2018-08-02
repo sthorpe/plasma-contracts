@@ -39,8 +39,7 @@ contract RootChain {
     );
 
     event BlockSubmitted(
-        bytes32 root,
-        uint256 timestamp
+        uint256 blockNumber
     );
 
     event TokenAdded(
@@ -134,7 +133,7 @@ contract RootChain {
         currentChildBlock = currentChildBlock.add(CHILD_BLOCK_INTERVAL);
         currentDepositBlock = 1;
 
-        emit BlockSubmitted(_root, block.timestamp);
+        emit BlockSubmitted(currentChildBlock);
     }
 
     /**
