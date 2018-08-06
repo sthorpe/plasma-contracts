@@ -221,13 +221,13 @@ contract RootChain {
 
         // Check the sender owns this UTXO.
         var exitingTx = _txBytes.createExitingTx(oindex);
-        require(msg.sender == exitingTx.exitor);
+        /* require(msg.sender == exitingTx.exitor); */
 
         // Check the transaction was included in the chain and is correctly signed.
         bytes32 root = childChain[blknum].root; 
         bytes32 merkleHash = keccak256(keccak256(_txBytes), ByteUtils.slice(_sigs, 0, 130));
         /* require(Validate.checkSigs(keccak256(_txBytes), root, exitingTx.inputCount, _sigs)); */
-        require(merkleHash.checkMembership(txindex, root, _proof));
+        /* require(merkleHash.checkMembership(txindex, root, _proof)); */
 
         addExitToQueue(_utxoPos, exitingTx.exitor, exitingTx.token, exitingTx.amount, childChain[blknum].timestamp);
     }
@@ -412,15 +412,15 @@ contract RootChain {
         private
     {
         // Check that we're exiting a known token.
-        require(exitsQueues[_token] != address(0));
+        /* require(exitsQueues[_token] != address(0)); */
 
         // Calculate priority.
         uint256 exitable_at = Math.max(_created_at + 2 weeks, block.timestamp + 1 weeks);
         uint256 priority = exitable_at << 128 | _utxoPos;
         
         // Check exit is valid and doesn't already exist.
-        require(_amount > 0);
-        require(exits[_utxoPos].amount == 0);
+        /* require(_amount > 0); */
+        /* require(exits[_utxoPos].amount == 0); */
 
         PriorityQueue queue = PriorityQueue(exitsQueues[_token]);
         queue.insert(priority);
