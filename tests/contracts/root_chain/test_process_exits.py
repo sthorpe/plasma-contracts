@@ -67,7 +67,7 @@ def test_finalize_exits_old_utxo_is_mature_after_single_mfp(testlang):
     assert testlang.get_standard_exit(spend_id).owner == NULL_ADDRESS_HEX
 
 
-def test_finalize_exits_new_utxo_is_mature_after_mfp_pls_rep(testlang):
+def test_finalize_exits_new_utxo_is_mature_after_mfp_plus_rep(testlang):
     minimal_finalization_period = WEEK  # aka MFP - see tesuji blockchain design
     required_exit_period = WEEK  # aka REP - see tesuji blockchain design
     owner, amount = testlang.accounts[0], 100
@@ -109,6 +109,12 @@ def test_finalize_exits_only_mature_exits_are_processed(testlang):
     testlang.finalize_exits(NULL_ADDRESS, 0, 100)
     assert testlang.get_standard_exit(spend_id_1).owner == NULL_ADDRESS_HEX
     assert testlang.get_standard_exit(spend_id_2).owner == owner.address
+
+
+def test_finalize_exits_for_uninitialized_ERC20_should_fail(testlang, root_chain, token):
+    assert not root_chain.hasToken(token.address)
+    with pytest.raises(TransactionFailed):
+        testlang.finalize_exits(token.address, 0, 100)
 
 
 def test_finalize_exits_partial_queue_processing(testlang):
